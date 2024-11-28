@@ -12,11 +12,11 @@ using System;
 using System.Reflection;
 
 [assembly: Microsoft.AspNetCore.Identity.UI.UIFrameworkAttribute("Bootstrap5")]
-[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("aspnet-GatherUp-3f1d2cb1-5e61-49fd-9a99-033db0f25503")]
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("aspnet-GatherUp-d7e65816-c20c-4532-85ca-9df7196fab74")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("GatherUp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+671505adb3e934aa6064e8481f1d2999961ae464")]
 [assembly: System.Reflection.AssemblyProductAttribute("GatherUp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GatherUp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
