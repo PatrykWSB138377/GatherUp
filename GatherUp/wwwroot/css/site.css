@@ -18,5 +18,26 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    background-color: #f4f4f4;
+    height: 100vh;
 }
+
+@keyframes darken-bg {
+    from {
+        background-color: transparent;
+    }
+    to {
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+}
+
+.nav-item {
+    background-color: transparent;
+}
+
+.nav-item:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+    animation: darken-bg 0.2s ease;
+    border-radius: 6px;
+}
+

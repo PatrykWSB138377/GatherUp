@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using GatherUp.Models;
 
 namespace GatherUp.Data
 {
@@ -9,5 +10,6 @@ namespace GatherUp.Data
             : base(options)
         {
         }
+        public DbSet<GatherUp.Models.Event> Event { get; set; } = default!;
     }
 }
