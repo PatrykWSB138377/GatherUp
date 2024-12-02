@@ -1,0 +1,11 @@
+﻿@{
+
+    var classes = ViewData["Classes"] as string ?? "";
+    var url = ViewData["Url"] as string ?? "";
+    var buttonText = ViewData["ButtonText"] as string ?? "Wróć";
+}
+
+<a href="@url" class="btn btn-primary">
+    <i class="bi bi-arrow-left-circle me-2"></i>@buttonText
+ </a>
+

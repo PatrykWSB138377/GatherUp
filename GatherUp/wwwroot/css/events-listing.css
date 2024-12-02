@@ -1,0 +1,26 @@
+﻿
+
+.event-entry {
+    display: grid;
+    grid-template-columns: 5fr 12fr 8fr;
+    gap: 32px;
+
+    height: 250px;
+    max-height: 250px;
+
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: var(--bs-dark);
+    color: white;
+}
+
+.event-entry__image-container {
+    max-height: 200px;
+    height: 200px;
+}
+
+.event-entry__image {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
