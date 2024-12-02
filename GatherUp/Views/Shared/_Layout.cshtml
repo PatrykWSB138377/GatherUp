@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link href="~/css/landing-page.css" rel="stylesheet" />
+    <link href="~/css/events-listing.css" rel="stylesheet" />
+    <link href="~/css/event-details.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/GatherUp.styles.css" asp-append-version="true" />
     <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
     <link href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
@@ -24,7 +26,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Events" asp-action="Index">Wydarzenia</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Events" asp-action="Index">Przeglądaj</a>
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />
@@ -40,7 +42,7 @@
 
     <footer class="footer text-muted bg-dark box-shadow ">
         <div class="container">
-            &copy; 2024 - GatherUp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2024 - GatherUp
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

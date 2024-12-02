@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GatherUp.Data;
 using GatherUp.Models;
+using GatherUp.Utils;
+using GatherUp.Models.ViewModels;
+using Microsoft.EntityFrameworkCore; 
 
 namespace GatherUp.Controllers
 {
@@ -20,13 +23,29 @@ namespace GatherUp.Controllers
         }
 
         // GET: Events
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10) 
         {
-            return View(await _context.Event.ToListAsync());
+            int totalEvents = await _context.Event.CountAsync(); 
+            var events = await _context.Event
+                .OrderBy(e => e.Name)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(); 
+
+            var viewModel = new PagedListViewModel<Event>
+            {
+                Items = events,
+                CurrentPage = pageNumber,
+                TotalPages = (int)Math.Ceiling(totalEvents / (double)pageSize),
+                PageSize = pageSize,
+                TotalCount = totalEvents
+            };
+
+            return View(viewModel);
         }
 
-        // GET: Events/Details/5
-        public async Task<IActionResult> Details(int? id)
+// GET: Events/Details/5
+public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -46,6 +65,14 @@ namespace GatherUp.Controllers
         // GET: Events/Create
         public IActionResult Create()
         {
+            var ImageSelectList = ImageMappings.LabelToFilename.Select(mapping => new SelectListItem
+            {
+                Value = mapping.Key,
+                Text = mapping.Value
+            }).ToList();
+
+            ViewData["imageItems"] = ImageSelectList;
+
             return View();
         }
 
@@ -54,7 +81,7 @@ namespace GatherUp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Location,Date")] Event @event)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Location,Date,Image")] Event @event)
         {
             if (ModelState.IsValid)
             {
@@ -62,12 +89,30 @@ namespace GatherUp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            var ImageSelectList = ImageMappings.LabelToFilename.Select(mapping => new SelectListItem
+            {
+                Value = mapping.Key,
+                Text = mapping.Value
+            }).ToList();
+
+            ViewData["imageItems"] = ImageSelectList;
+
             return View(@event);
         }
 
         // GET: Events/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            var ImageSelectList = ImageMappings.LabelToFilename.Select(mapping => new SelectListItem
+            {
+                Value = mapping.Key,
+                Text = mapping.Value
+            }).ToList();
+
+            ViewData["imageItems"] = ImageSelectList;
+
+
             if (id == null)
             {
                 return NotFound();
@@ -78,6 +123,7 @@ namespace GatherUp.Controllers
             {
                 return NotFound();
             }
+
             return View(@event);
         }
 
@@ -86,8 +132,17 @@ namespace GatherUp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Location,Date")] Event @event)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Location,Date,Image")] Event @event)
         {
+            var ImageSelectList = ImageMappings.LabelToFilename.Select(mapping => new SelectListItem
+            {
+                Value = mapping.Key,
+                Text = mapping.Value
+            }).ToList();
+
+            ViewData["imageItems"] = ImageSelectList;
+
+
             if (id != @event.Id)
             {
                 return NotFound();
@@ -110,8 +165,10 @@ namespace GatherUp.Controllers
                     {
                         throw;
                     }
+
                 }
                 return RedirectToAction(nameof(Index));
+
             }
             return View(@event);
         }
