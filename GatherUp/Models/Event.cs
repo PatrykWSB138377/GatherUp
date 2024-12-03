@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace GatherUp.Models
 {
@@ -15,6 +17,8 @@ namespace GatherUp.Models
         public DateTime Date { get; set; }
         [DisplayName("Obrazek")]
         public string Image {  get; set; }
+        public string? UserId { get; set; }
+        public IdentityUser? User { get; set; }
 
     }
 }
