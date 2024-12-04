@@ -1,4 +1,4 @@
-﻿@model PagedListViewModel<GatherUp.Models.Event>
+﻿@model PagedListViewModel<EventViewModel>
 @using GatherUp.Models.ViewModels
 
 @{
@@ -11,48 +11,5 @@
 <a asp-action="Create" class="btn btn-success">Dodaj nowe wydarzenie</a>
 
 <section class="px-0 py-3">
-@foreach (var item in Model.Items)
-{
-
-    <div class="event-entry mt-2">
-        <div class="">
-            <img src="~/internal-images/@item.Image" class="event-entry__image"/>
-        </div>
-       <div class="py-3 overflow-auto">
-            <h3>@item.Name</h3>
-            <p class="text-muted"><strong>Adres:</strong> @item.Location</p>
-            <p>@TextUtils.Truncate(@item.Description, 400)</p>
-        </div>
-        <div style="gap: 8px;" class="py-3 px-2 d-flex justify-content-center align-items-end">
-                @await Component.InvokeAsync("FollowButton")
-            <a asp-action="Details" asp-route-id="@item.Id" style="height: fit-content" class="btn btn-outline-primary">Zobacz szczegóły wydarzenia</a>
-        </div>
-    </div>
-
-}
-
-    <nav class="p-5">
-        <div></div>
-        <ul class="pagination justify-content-center">
-            @if (Model.CurrentPage > 1)
-            {
-                <li class="page-item">
-                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.CurrentPage - 1)"><strong>&lt;</strong></a>
-                </li>
-            }
-            @for (var i = 1; i <= Model.TotalPages; i++)
-            {
-            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                <a class="page-link" asp-action="Index" asp-route-pageNumber="@i">@i</a>
-            </li>
-            }
-            @if (Model.CurrentPage < Model.TotalPages)
-            {
-                <li class="page-item">
-                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.CurrentPage + 1)"><strong>&gt;</strong></a>
-                </li>
-            }
-
-        </ul>
-    </nav>
+    <partial name="_EventsListing" model="Model" />
 </section>

@@ -9,11 +9,25 @@ using GatherUp.Data;
 using GatherUp.Models;
 using GatherUp.Utils;
 using GatherUp.Models.ViewModels;
-using Microsoft.EntityFrameworkCore; 
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using System.Runtime.InteropServices;
+using System.Security.Claims;
 
 namespace GatherUp.Controllers
 {
-    public class EventsController : Controller
+    public class BaseController : Controller
+    {
+        protected string CurrentUserId => User.FindFirstValue(ClaimTypes.NameIdentifier);
+        protected List<SelectListItem>? ImageSelectList = ImageMappings.LabelToFilename.Select(mapping => new SelectListItem
+        {
+            Value = mapping.Key,
+            Text = mapping.Value
+        }).ToList();
+    }
+
+
+    public class EventsController : BaseController
     {
         private readonly ApplicationDbContext _context;
 
@@ -28,11 +42,22 @@ namespace GatherUp.Controllers
             int totalEvents = await _context.Event.CountAsync(); 
             var events = await _context.Event
                 .OrderBy(e => e.Name)
+                .OrderBy(e => e.Name)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .ToListAsync(); 
+                .Select(e => new EventViewModel
+                {
+                    Id = e.Id,
+                    Name = e.Name,
+                    Description = e.Description,
+                    Location = e.Location,
+                    Date = e.Date,
+                    Image = e.Image,
+                    UserName = e.User.UserName
+                })
+                .ToListAsync();
 
-            var viewModel = new PagedListViewModel<Event>
+            var viewModel = new PagedListViewModel<EventViewModel>
             {
                 Items = events,
                 CurrentPage = pageNumber,
@@ -44,33 +69,74 @@ namespace GatherUp.Controllers
             return View(viewModel);
         }
 
-// GET: Events/Details/5
-public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> MyEvents(int pageNumber = 1, int pageSize = 10)
+        {
+            var events = await _context.Event
+            .Where(e => e.UserId == CurrentUserId)
+            .OrderBy(e => e.Name)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .Select(e => new EventViewModel
+            {
+                Id = e.Id,
+                Name = e.Name,
+                Description = e.Description,
+                Location = e.Location,
+                Date = e.Date,
+                Image = e.Image,
+                UserName = e.User.UserName 
+            })
+            .ToListAsync();
+            
+
+            int totalEvents = events.Count();
+
+            var viewModel = new PagedListViewModel<EventViewModel>
+            {
+                Items = events,
+                CurrentPage = pageNumber,
+                TotalPages = (int)Math.Ceiling(totalEvents / (double)pageSize),
+                PageSize = pageSize,
+                TotalCount = totalEvents
+            };
+
+            return View("MyEvents", viewModel);
+        }
+
+        // GET: Events/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var @event = await _context.Event
+            var @event = await _context.Event.Include(e => e.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (@event == null)
             {
                 return NotFound();
             }
 
-            return View(@event);
+            EventViewModel eventViewModel = new EventViewModel
+            {
+                Id = @event.Id,
+                Name = @event.Name,
+                Description = @event.Description,
+                Location = @event.Location,
+                Date = @event.Date,
+                Image = @event.Image,
+                UserName = @event.User.UserName,
+                IsUserEvent = @event.UserId == CurrentUserId
+            };
+
+            return View(eventViewModel);
         }
 
         // GET: Events/Create
+        [Authorize]
         public IActionResult Create()
         {
-            var ImageSelectList = ImageMappings.LabelToFilename.Select(mapping => new SelectListItem
-            {
-                Value = mapping.Key,
-                Text = mapping.Value
-            }).ToList();
-
             ViewData["imageItems"] = ImageSelectList;
 
             return View();
@@ -79,10 +145,14 @@ public async Task<IActionResult> Details(int? id)
         // POST: Events/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,Location,Date,Image")] Event @event)
         {
+            @event.UserId = CurrentUserId;
+
             if (ModelState.IsValid)
             {
                 _context.Add(@event);
@@ -90,28 +160,16 @@ public async Task<IActionResult> Details(int? id)
                 return RedirectToAction(nameof(Index));
             }
 
-            var ImageSelectList = ImageMappings.LabelToFilename.Select(mapping => new SelectListItem
-            {
-                Value = mapping.Key,
-                Text = mapping.Value
-            }).ToList();
-
             ViewData["imageItems"] = ImageSelectList;
 
             return View(@event);
         }
 
         // GET: Events/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
-            var ImageSelectList = ImageMappings.LabelToFilename.Select(mapping => new SelectListItem
-            {
-                Value = mapping.Key,
-                Text = mapping.Value
-            }).ToList();
-
             ViewData["imageItems"] = ImageSelectList;
-
 
             if (id == null)
             {
@@ -124,6 +182,11 @@ public async Task<IActionResult> Details(int? id)
                 return NotFound();
             }
 
+            if (@event.UserId != CurrentUserId)
+            {
+                return Forbid();
+            };
+
             return View(@event);
         }
 
@@ -131,22 +194,23 @@ public async Task<IActionResult> Details(int? id)
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Location,Date,Image")] Event @event)
         {
-            var ImageSelectList = ImageMappings.LabelToFilename.Select(mapping => new SelectListItem
-            {
-                Value = mapping.Key,
-                Text = mapping.Value
-            }).ToList();
-
             ViewData["imageItems"] = ImageSelectList;
-
 
             if (id != @event.Id)
             {
                 return NotFound();
             }
+
+            if (@event.UserId != CurrentUserId)
+            {
+                return Forbid();
+            };
+
+            @event.UserId = CurrentUserId;
 
             if (ModelState.IsValid)
             {
@@ -174,6 +238,7 @@ public async Task<IActionResult> Details(int? id)
         }
 
         // GET: Events/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -188,11 +253,16 @@ public async Task<IActionResult> Details(int? id)
                 return NotFound();
             }
 
+            if (@event.UserId != CurrentUserId) {
+                return Forbid();
+            };
+
             return View(@event);
         }
 
         // POST: Events/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -201,6 +271,11 @@ public async Task<IActionResult> Details(int? id)
             {
                 _context.Event.Remove(@event);
             }
+
+            if (@event.UserId != CurrentUserId)
+            {
+                return Forbid();
+            };
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

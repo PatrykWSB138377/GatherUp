@@ -1,0 +1,15 @@
+﻿@model PagedListViewModel<EventViewModel>
+@using GatherUp.Models.ViewModels
+
+@{
+    ViewData["Title"] = "Moje wydarzenia";
+}
+
+<h1>Moje wydarzenia</h1>
+<p>Lista utworzonych przez ciebie wydarzeń</p>
+
+<a asp-action="Create" class="btn btn-success">Dodaj nowe wydarzenie</a>
+
+<section class="px-0 py-3">
+    <partial name="_EventsListing" model="Model" />
+</section>

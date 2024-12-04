@@ -1,0 +1,12 @@
+﻿@page
+@model ConfirmEmailModel
+@{
+    ViewData["Title"] = "Potwierdzono adres email!";
+}
+
+<div class="container w-75">
+    <h1 class="text-center">@ViewData["Title"]</h1>
+    <p class="text-center">
+        <a id="confirm-link" asp-controller="Events" asp-action="Index">Zacznij przeglądać wydarzenia jako zalogowany</a> 
+    </p>
+</div>

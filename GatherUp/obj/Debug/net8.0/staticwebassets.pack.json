@@ -13,6 +13,14 @@
       "PackagePath": "staticwebassets\\css\\events-listing.css"
     },
     {
+      "Id": "C:\\Users\\Patryk\\source\\repos\\GatherUp\\GatherUp\\wwwroot\\css\\identity-login.css",
+      "PackagePath": "staticwebassets\\css\\identity-login.css"
+    },
+    {
+      "Id": "C:\\Users\\Patryk\\source\\repos\\GatherUp\\GatherUp\\wwwroot\\css\\identity-register.css",
+      "PackagePath": "staticwebassets\\css\\identity-register.css"
+    },
+    {
       "Id": "C:\\Users\\Patryk\\source\\repos\\GatherUp\\GatherUp\\wwwroot\\css\\landing-page.css",
       "PackagePath": "staticwebassets\\css\\landing-page.css"
     },
@@ -37,8 +45,16 @@
       "PackagePath": "staticwebassets\\internal-images\\landing-page.jpg"
     },
     {
+      "Id": "C:\\Users\\Patryk\\source\\repos\\GatherUp\\GatherUp\\wwwroot\\internal-images\\login-page.jpg",
+      "PackagePath": "staticwebassets\\internal-images\\login-page.jpg"
+    },
+    {
       "Id": "C:\\Users\\Patryk\\source\\repos\\GatherUp\\GatherUp\\wwwroot\\internal-images\\outdoors.jpg",
       "PackagePath": "staticwebassets\\internal-images\\outdoors.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Patryk\\source\\repos\\GatherUp\\GatherUp\\wwwroot\\internal-images\\register-page.jpg",
+      "PackagePath": "staticwebassets\\internal-images\\register-page.jpg"
     },
     {
       "Id": "C:\\Users\\Patryk\\source\\repos\\GatherUp\\GatherUp\\wwwroot\\js\\site.js",

@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link href="~/css/landing-page.css" rel="stylesheet" />
+    <link href="~/css/identity-register.css" rel="stylesheet" />
+    <link href="~/css/identity-login.css" rel="stylesheet" />
     <link href="~/css/events-listing.css" rel="stylesheet" />
     <link href="~/css/event-details.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/GatherUp.styles.css" asp-append-version="true" />
@@ -27,6 +29,9 @@
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Events" asp-action="Index">Przeglądaj</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Events" asp-action="MyEvents">Moje wydarzenia</a>
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />
