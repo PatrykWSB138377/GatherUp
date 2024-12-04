@@ -1,0 +1,25 @@
+﻿.identity-register__container {
+    position: relative;
+    top: 15vh;
+    background-color: var(--bs-dark);
+
+    padding: 32px 32px;
+    border-radius: 16px;
+}
+
+
+.identity-register__image-container {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    top: 0px;
+    left: 0px;
+    z-index: -1;
+}
+
+.identity-register__image {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    filter: brightness(45%)
+}
