@@ -1,7 +1,87 @@
-﻿@{
-    var classes = ViewData["Classes"] as string ?? "";
+﻿@model GatherUp.Models.ViewModels.FollowButtonViewModel
+
+@{
+    var followId = Model.Event.UserFollow?.Id ?? null;
+
+    if ((bool)Model.Event.IsUserEvent)
+    {
+        return;
+    }
 }
 
-<a class="btn btn-outline-primary @classes">
+<button id="followButton-@Model.Event.Id" class="btn btn-outline-primary @Model.Classes"
+data-event-id="@(@Model.Event.Id)" data-current-user-id="@Model.UserId" data-follow-id="@followId" data-reload-on-change="@Model.ReloadOnChange">
     <i class="bi bi-eye-fill me-1"></i> Obserwuj
-</a>
+</button>
+
+
+<script>
+   (() => {
+        const followButton = document.querySelector('#followButton-@Model.Event.Id')
+        const userId = followButton.getAttribute('data-event-id')
+        const eventId = followButton.getAttribute('data-current-user-id')
+        const reloadOnChangeString = followButton.getAttribute('data-reload-on-change')
+        const reloadOnChangeParsed = JSON.parse(reloadOnChangeString.toLowerCase())
+        let followId = followButton.getAttribute('data-follow-id')
+
+        if (followId) {
+            acknowledgeFollow()
+        }
+
+        followButton.addEventListener('click', () => {
+            if (followId) {
+                fetch('@Url.Action("Delete", "EventFollows")', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id: +followId })
+                 })
+                .then(response => {
+                    acknowledgeUnfollow()
+                    followId = null
+
+                    if (reloadOnChangeParsed) {
+                        location.reload()
+                    }
+                });
+
+            return
+            }
+
+
+            fetch('@Url.Action("Create", "EventFollows")', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ EventId: @Model.Event.Id, UserId: '@Model.UserId' })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    followId = data.followId; 
+                    acknowledgeFollow()
+
+                    if (reloadOnChangeParsed) {
+                        location.reload()
+                    }
+                } else {
+                    alert(data.message);
+                }
+            });
+        });
+
+        function acknowledgeFollow() {
+            followButton.classList.add('bg-primary', 'text-white')
+            followButton.innerHTML = "<i class=\"bi bi-check-lg\"></i> Obserwujesz"
+        }
+
+        function acknowledgeUnfollow() {
+            followButton.classList.remove('bg-primary', 'text-white')
+            followButton.innerHTML = " <i class=\"bi bi-eye-fill me-1\"></i> Obserwuj"
+        }
+    })()
+</script>

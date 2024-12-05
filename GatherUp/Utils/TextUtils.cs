@@ -11,5 +11,25 @@ namespace GatherUp.Utils
 
             return text.Truncate(maxLength, suffix);
         }
+
+
+        public static string FormBasedOnCount(int count, string singular, string plural, string pluralBig)
+        {
+            string form = singular;
+            if (count == 1)
+            {
+                form = singular;
+            }
+            else if (count >= 2 && count <= 4)
+            {
+                form = plural;
+            }
+            else
+            {
+                form = pluralBig;
+            }
+
+            return $"{count} {form}";
+        }
     }
 }

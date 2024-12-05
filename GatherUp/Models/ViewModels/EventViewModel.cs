@@ -4,5 +4,6 @@
     {
         public string UserName { get; set; } 
         public bool? IsUserEvent { get; set; }
+        public EventFollow? UserFollow { get; set; }
     }
 }

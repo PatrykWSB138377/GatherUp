@@ -16,8 +16,8 @@
             <p class="text-muted"><strong>Adres:</strong> @item.Location</p>
             <p>@TextUtils.Truncate(@item.Description, 400)</p>
         </div>
-        <div style="gap: 8px;" class="py-3 px-2 d-flex justify-content-center align-items-end">
-            @await Component.InvokeAsync("FollowButton")
+        <div style="gap: 8px;" class="py-3 px-2 d-flex justify-content-end align-items-end">
+              @await Component.InvokeAsync("FollowButton", new { eventModel = item, reloadOnChange = (string)ViewData["ListingType"] == "Followed" ? true : false })
             <a asp-action="Details" asp-route-id="@item.Id" style="height: fit-content" class="btn btn-outline-primary">Zobacz szczegóły wydarzenia</a>
         </div>
     </div>
