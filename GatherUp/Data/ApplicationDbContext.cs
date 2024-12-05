@@ -11,5 +11,6 @@ namespace GatherUp.Data
         {
         }
         public DbSet<GatherUp.Models.Event> Event { get; set; } = default!;
+        public DbSet<GatherUp.Models.EventFollow> EventFollow { get; set; } = default!;
     }
 }
