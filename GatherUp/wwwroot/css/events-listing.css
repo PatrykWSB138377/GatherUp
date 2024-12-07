@@ -2,8 +2,8 @@
 
 .event-entry {
     display: grid;
-    grid-template-columns: 5fr 12fr 8fr;
-    gap: 32px;
+    grid-template-columns: 5fr 12fr 9fr;
+    gap: 24px;
 
     height: 250px;
     max-height: 250px;

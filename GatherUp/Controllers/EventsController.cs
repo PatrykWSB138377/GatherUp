@@ -58,6 +58,9 @@ namespace GatherUp.Controllers
                     IsUserEvent = e.UserId == CurrentUserId,
                     UserFollow = _context.EventFollow
                         .Where(ef => ef.EventId == e.Id && ef.UserId == CurrentUserId)
+                        .FirstOrDefault(),
+                    UserJoinRequest = _context.EventJoinRequest
+                        .Where(ejr => ejr.EventId == e.Id && ejr.SenderUserId == CurrentUserId)
                         .FirstOrDefault()
                 })
                 .ToListAsync();
@@ -131,6 +134,9 @@ namespace GatherUp.Controllers
                 IsUserEvent = e.UserId == CurrentUserId,
                 UserFollow = _context.EventFollow
                         .Where(ef => ef.EventId == e.Id && ef.UserId == CurrentUserId)
+                        .FirstOrDefault(),
+                UserJoinRequest = _context.EventJoinRequest
+                        .Where(ejr => ejr.EventId == e.Id && ejr.SenderUserId == CurrentUserId)
                         .FirstOrDefault()
             })
             .ToListAsync();
@@ -167,6 +173,7 @@ namespace GatherUp.Controllers
             }
 
             var follow = await _context.EventFollow.FirstOrDefaultAsync(ef =>  ef.UserId == CurrentUserId && ef.EventId == @event.Id);
+            var joinRequest = await _context.EventJoinRequest.FirstOrDefaultAsync(ejr => ejr.SenderUserId == CurrentUserId && ejr.EventId == @event.Id);
 
             EventViewModel eventViewModel = new EventViewModel
             {
@@ -180,6 +187,7 @@ namespace GatherUp.Controllers
                 UserId = @event.UserId,
                 IsUserEvent = @event.UserId == CurrentUserId,
                 UserFollow = follow,
+                UserJoinRequest = joinRequest,
             };
 
             return View(eventViewModel);

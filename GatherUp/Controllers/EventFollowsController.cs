@@ -35,7 +35,6 @@ namespace GatherUp.Controllers
         {
 
             var followAlreadyExist = _context.EventFollow.Where(ef => ef.EventId == eventFollow.EventId && ef.UserId == eventFollow.UserId).Any();
-            Console.WriteLine(followAlreadyExist);
             if (ModelState.IsValid && !followAlreadyExist)
             {
                 _context.Add(eventFollow);
@@ -60,8 +59,6 @@ namespace GatherUp.Controllers
             Console.WriteLine(request.Id);
 
             var eventFollow = await _context.EventFollow.FindAsync(request.Id);
-            Console.WriteLine("HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-            Console.WriteLine(eventFollow);
             if (eventFollow != null)
             {
                 _context.EventFollow.Remove(eventFollow);

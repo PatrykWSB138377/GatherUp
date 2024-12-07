@@ -23,7 +23,10 @@
                 <p>@Model.Description</p>
             </div>
             <div class="py-3 d-flex justify-content-between w-100">
+                <div style="gap: 8px;" class="d-flex">
                 @await Component.InvokeAsync("FollowButton", new { eventModel = Model })
+                @await Component.InvokeAsync("JoinRequestButton", new { eventModel = Model })
+                </div>
                 @{
                     if ((bool)Model.IsUserEvent)
                     {
