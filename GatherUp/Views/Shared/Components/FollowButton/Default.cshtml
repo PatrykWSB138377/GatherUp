@@ -18,8 +18,8 @@ data-event-id="@(@Model.Event.Id)" data-current-user-id="@Model.UserId" data-fol
 <script>
    (() => {
         const followButton = document.querySelector('#followButton-@Model.Event.Id')
-        const userId = followButton.getAttribute('data-event-id')
-        const eventId = followButton.getAttribute('data-current-user-id')
+        const eventId = followButton.getAttribute('data-event-id')
+        const userId = followButton.getAttribute('data-current-user-id')
         const reloadOnChangeString = followButton.getAttribute('data-reload-on-change')
         const reloadOnChangeParsed = JSON.parse(reloadOnChangeString.toLowerCase())
         let followId = followButton.getAttribute('data-follow-id')
@@ -29,6 +29,11 @@ data-event-id="@(@Model.Event.Id)" data-current-user-id="@Model.UserId" data-fol
         }
 
         followButton.addEventListener('click', () => {
+
+            if (!userId) {
+                window.location.href = '@Url.Page("/Account/Login", new { area = "Identity" })'
+            }
+
             if (followId) {
                 fetch('@Url.Action("Delete", "EventFollows")', {
                     method: 'POST',

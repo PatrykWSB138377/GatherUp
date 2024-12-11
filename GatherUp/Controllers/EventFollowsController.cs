@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GatherUp.Data;
 using GatherUp.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GatherUp.Controllers
 {
@@ -31,6 +32,7 @@ namespace GatherUp.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Create([FromBody] EventFollow eventFollow)
         {
 
@@ -54,6 +56,7 @@ namespace GatherUp.Controllers
 
         // POST: EventFollows/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed([FromBody] DeleteFollowRequest request)
         {
             Console.WriteLine(request.Id);

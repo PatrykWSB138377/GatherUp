@@ -1,0 +1,12 @@
+﻿@{
+    var currentPath = Context.Request.Path.Value;
+}
+
+ <ul style="gap: 8px;" class="nav nav-pills">
+    <li class="nav-item">
+        <a class="nav-link @(currentPath.Contains("OwnRequests") ? "active" : "")" asp-action="OwnRequests" asp-controller="EventJoinRequests">Twoje prośby o udział w wydarzeniach</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(currentPath.Contains("ForeignRequests") ? "active" : "")" asp-action="ForeignRequests" asp-controller="EventJoinRequests">Prośby użytkowników o udział w twoich wydarzeniach</a>
+    </li>
+ </ul>
