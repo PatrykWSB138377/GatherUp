@@ -6,8 +6,9 @@ namespace GatherUp.Models
 {
     public class Event
     {
+        //TODO: add input restrictions
         public int Id { get; set; }
-        [DisplayName("Nazwa")]
+        [DisplayName("Nazwa wydarzenia")]
         public string Name { get; set; }
         [DisplayName("Opis")]
         public string Description { get; set; }

@@ -1,0 +1,77 @@
+﻿@model GatherUp.Models.ViewModels.AcceptOrRejectRequestButtonsViewModel
+
+
+
+
+
+@* 
+TODO: uncomment this    
+@if (Model.EventJoinRequest.Status != InvitationStatus.Pending)
+{
+    <span>
+        -
+    </span>
+    return;
+} *@
+
+<div id="accept-or-reject-buttons-@Model.EventJoinRequest.Id" style="gap: 8px;" class="d-flex flex-column" data-reload-on-change="@Model.ReloadOnChange">
+    <button style="white-space: nowrap;" id="accept-button-@Model.EventJoinRequest.Id" class="btn btn-sm d-flex justify-between btn-success @Model.Classes">
+        <i class="bi bi bi-check-lg me-1"></i> Zaakceptuj
+    </button>
+    <button style="white-space: nowrap;" id="reject-button-@Model.EventJoinRequest.Id" class="btn btn-sm d-flex justify-between btn-danger @Model.Classes">
+        <i class="bi bi bi-check-lg me-1"></i> Odrzuć
+    </button>
+</div>
+
+
+<script>
+   (() => {
+        const buttonsContainer = document.querySelector('#accept-or-reject-buttons-@Model.EventJoinRequest.Id')
+        const acceptButton = document.querySelector('#accept-button-@Model.EventJoinRequest.Id')
+        const rejectButton = document.querySelector('#reject-button-@Model.EventJoinRequest.Id')
+
+        const reloadOnChangeString = buttonsContainer.getAttribute('data-reload-on-change')
+        const reloadOnChangeParsed = JSON.parse(reloadOnChangeString.toLowerCase())
+
+        acceptButton.addEventListener('click', () => {
+            const confirmMsg = "Czy jesteś pewien, że chcesz potwierdzić prośbę o udziale w wydarzeniu?"
+            if (!window.confirm(confirmMsg)) {
+                return
+            }
+
+            changeStatusReqeuest(@((int)InvitationStatus.Accepted))
+        });
+
+        rejectButton.addEventListener('click', () => {
+            const confirmMsg = "Czy jesteś pewien, że chcesz odrzucić prośbę o udziale w wydarzeniu?"
+            if (!window.confirm(confirmMsg)) {
+                return
+            }
+           
+            changeStatusReqeuest(@((int)InvitationStatus.Rejected))
+        });
+
+
+       function changeStatusReqeuest(newStatus) {
+            fetch('@Url.Action("ChangeStatus", "EventJoinRequests")', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ Id: @Model.EventJoinRequest.Id, NewStatus: newStatus })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (reloadOnChangeParsed) {
+                            location.reload()
+                        }
+                    } else {
+                        alert(data.message);
+                    }
+                });
+       }
+
+    })()
+</script>

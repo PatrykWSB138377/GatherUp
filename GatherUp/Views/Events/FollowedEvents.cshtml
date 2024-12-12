@@ -1,0 +1,14 @@
+﻿@model PagedListViewModel<EventViewModel>
+
+@{
+    ViewData["Title"] = "Obserwowane wydarzenia";
+    ViewData["ListingType"] = "Followed";
+}
+
+<h1>@ViewData["Title"]</h1>
+<p>Lista obserwowanych przez ciebie wydarzeń.</p>
+<p>Aktualnie obserwujesz <strong>@TextUtils.FormBasedOnCount(Model.TotalCount, "wydarzenie", "wydarzenia", "wydarzeń").</strong></p>
+
+<section class="px-0 py-3">
+    <partial name="_EventsListing" model="Model" />
+</section>

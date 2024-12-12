@@ -90,6 +90,50 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Patryk/source/repos/GatherUp/GatherUp/Views/EventFollows/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRGb2xsb3dzXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Patryk/source/repos/GatherUp/GatherUp/Views/EventFollows/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRGb2xsb3dzXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Patryk/source/repos/GatherUp/GatherUp/Views/EventFollows/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRGb2xsb3dzXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Patryk/source/repos/GatherUp/GatherUp/Views/EventFollows/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRGb2xsb3dzXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Patryk/source/repos/GatherUp/GatherUp/Views/EventFollows/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRGb2xsb3dzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Patryk/source/repos/GatherUp/GatherUp/Views/EventJoinRequests/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRKb2luUmVxdWVzdHNcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Patryk/source/repos/GatherUp/GatherUp/Views/EventJoinRequests/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRKb2luUmVxdWVzdHNcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Patryk/source/repos/GatherUp/GatherUp/Views/EventJoinRequests/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRKb2luUmVxdWVzdHNcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Patryk/source/repos/GatherUp/GatherUp/Views/EventJoinRequests/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRKb2luUmVxdWVzdHNcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Patryk/source/repos/GatherUp/GatherUp/Views/EventJoinRequests/ForeignRequests.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRKb2luUmVxdWVzdHNcRm9yZWlnblJlcXVlc3RzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Patryk/source/repos/GatherUp/GatherUp/Views/EventJoinRequests/OwnRequests.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRKb2luUmVxdWVzdHNcT3duUmVxdWVzdHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Patryk/source/repos/GatherUp/GatherUp/Views/Events/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRzXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -106,6 +150,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRzXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Patryk/source/repos/GatherUp/GatherUp/Views/Events/FollowedEvents.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRzXEZvbGxvd2VkRXZlbnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Patryk/source/repos/GatherUp/GatherUp/Views/Events/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -118,12 +166,24 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Patryk/source/repos/GatherUp/GatherUp/Views/Shared/Components/AcceptOrRejectRequestButtons/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQWNjZXB0T3JSZWplY3RSZXF1ZXN0QnV0dG9uc1xEZWZhdWx0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Patryk/source/repos/GatherUp/GatherUp/Views/Shared/Components/FollowButton/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcRm9sbG93QnV0dG9uXERlZmF1bHQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Patryk/source/repos/GatherUp/GatherUp/Views/Shared/Components/GoBackButton/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcR29CYWNrQnV0dG9uXERlZmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Patryk/source/repos/GatherUp/GatherUp/Views/Shared/Components/InvitationsTabsSelector/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcSW52aXRhdGlvbnNUYWJzU2VsZWN0b3JcRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Patryk/source/repos/GatherUp/GatherUp/Views/Shared/Components/JoinRequestButton/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcSm9pblJlcXVlc3RCdXR0b25cRGVmYXVsdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Patryk/source/repos/GatherUp/GatherUp/Views/Shared/Error.cshtml]

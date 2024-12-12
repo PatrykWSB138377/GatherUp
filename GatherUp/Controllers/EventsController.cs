@@ -39,7 +39,7 @@ namespace GatherUp.Controllers
         // GET: Events
         public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10) 
         {
-            int totalEvents = await _context.Event.CountAsync(); 
+            int totalEvents = await _context.Event.CountAsync();
             var events = await _context.Event
                 .OrderBy(e => e.Name)
                 .OrderBy(e => e.Name)
@@ -53,9 +53,18 @@ namespace GatherUp.Controllers
                     Location = e.Location,
                     Date = e.Date,
                     Image = e.Image,
-                    UserName = e.User.UserName
+                    UserId = e.UserId,
+                    UserName = e.User.UserName,
+                    IsUserEvent = e.UserId == CurrentUserId,
+                    UserFollow = _context.EventFollow
+                        .Where(ef => ef.EventId == e.Id && ef.UserId == CurrentUserId)
+                        .FirstOrDefault(),
+                    UserJoinRequest = _context.EventJoinRequest
+                        .Where(ejr => ejr.EventId == e.Id && ejr.SenderUserId == CurrentUserId)
+                        .FirstOrDefault()
                 })
                 .ToListAsync();
+
 
             var viewModel = new PagedListViewModel<EventViewModel>
             {
@@ -84,7 +93,9 @@ namespace GatherUp.Controllers
                 Location = e.Location,
                 Date = e.Date,
                 Image = e.Image,
-                UserName = e.User.UserName 
+                UserId = e.UserId,
+                UserName = e.User.UserName,
+                IsUserEvent = e.UserId == CurrentUserId,
             })
             .ToListAsync();
             
@@ -103,6 +114,48 @@ namespace GatherUp.Controllers
             return View("MyEvents", viewModel);
         }
 
+        public async Task<IActionResult> FollowedEvents(int pageNumber = 1, int pageSize = 10)
+        {
+            var events = await _context.Event
+            .Where(e => _context.EventFollow.Any(ef => ef.EventId == e.Id && ef.UserId == CurrentUserId))
+            .OrderBy(e => e.Name)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .Select(e => new EventViewModel
+            {
+                Id = e.Id,
+                Name = e.Name,
+                Description = e.Description,
+                Location = e.Location,
+                Date = e.Date,
+                Image = e.Image,
+                UserId = e.UserId,
+                UserName = e.User.UserName,
+                IsUserEvent = e.UserId == CurrentUserId,
+                UserFollow = _context.EventFollow
+                        .Where(ef => ef.EventId == e.Id && ef.UserId == CurrentUserId)
+                        .FirstOrDefault(),
+                UserJoinRequest = _context.EventJoinRequest
+                        .Where(ejr => ejr.EventId == e.Id && ejr.SenderUserId == CurrentUserId)
+                        .FirstOrDefault()
+            })
+            .ToListAsync();
+
+
+            int totalEvents = events.Count();
+
+            var viewModel = new PagedListViewModel<EventViewModel>
+            {
+                Items = events,
+                CurrentPage = pageNumber,
+                TotalPages = (int)Math.Ceiling(totalEvents / (double)pageSize),
+                PageSize = pageSize,
+                TotalCount = totalEvents
+            };
+
+            return View("FollowedEvents", viewModel);
+        }
+
         // GET: Events/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -113,10 +166,24 @@ namespace GatherUp.Controllers
 
             var @event = await _context.Event.Include(e => e.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (@event == null)
             {
                 return NotFound();
             }
+
+            var follow = await _context.EventFollow.FirstOrDefaultAsync(ef =>  ef.UserId == CurrentUserId && ef.EventId == @event.Id);
+            var joinRequest = await _context.EventJoinRequest.FirstOrDefaultAsync(ejr => ejr.SenderUserId == CurrentUserId && ejr.EventId == @event.Id);
+
+            var isUserEvent = @event.UserId == CurrentUserId;
+
+            var participantIds = await _context.EventJoinRequest.Where(ejr => ejr.Status == InvitationStatus.Accepted && ejr.EventId == @event.Id).Select(ejr => ejr.SenderUserId).ToListAsync();
+            var participantUsernames = await _context.Users
+            .Where(user => participantIds.Contains(user.Id))
+            .Select(user => user.UserName)
+            .ToListAsync();
+
+            participantUsernames.Insert(0, _context.Users.FirstOrDefault(u => u.Id == @event.UserId).UserName); // add event's creator
 
             EventViewModel eventViewModel = new EventViewModel
             {
@@ -127,7 +194,11 @@ namespace GatherUp.Controllers
                 Date = @event.Date,
                 Image = @event.Image,
                 UserName = @event.User.UserName,
-                IsUserEvent = @event.UserId == CurrentUserId
+                UserId = @event.UserId,
+                IsUserEvent = isUserEvent,
+                UserFollow = follow,
+                UserJoinRequest = joinRequest,
+                Participants = participantUsernames,
             };
 
             return View(eventViewModel);
@@ -237,33 +308,10 @@ namespace GatherUp.Controllers
             return View(@event);
         }
 
-        // GET: Events/Delete/5
-        [Authorize]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var @event = await _context.Event
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (@event == null)
-            {
-                return NotFound();
-            }
-
-            if (@event.UserId != CurrentUserId) {
-                return Forbid();
-            };
-
-            return View(@event);
-        }
 
         // POST: Events/Delete/5
         [HttpPost, ActionName("Delete")]
         [Authorize]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var @event = await _context.Event.FindAsync(id);

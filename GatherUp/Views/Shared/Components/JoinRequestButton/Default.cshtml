@@ -1,0 +1,93 @@
+﻿@model GatherUp.Models.ViewModels.JoinRequestButtonViewModel
+
+@{
+    var joinRequestId = Model.Event.UserJoinRequest?.Id ?? null;
+
+    if ((bool)Model.Event.IsUserEvent)
+    {
+        return;
+    }
+}
+
+<button id="join-request-button-@Model.Event.Id" class="btn btn-outline-success @Model.Classes"
+data-event-id="@(@Model.Event.Id)" data-current-user-id="@Model.UserId" data-request-id="@joinRequestId" data-reload-on-change="@Model.ReloadOnChange">
+    <i class="bi bi-send-plus-fill me-1"></i></i> Wyślij zgłoszenie do udziału
+</button>
+
+
+<script>
+   (() => {
+        const joinRequestButton = document.querySelector('#join-request-button-@Model.Event.Id')
+
+        const eventId = joinRequestButton.getAttribute('data-event-id')
+        const userId = joinRequestButton.getAttribute('data-current-user-id')
+        const reloadOnChangeString = joinRequestButton.getAttribute('data-reload-on-change')
+        let joinRequestId = joinRequestButton.getAttribute('data-request-id')
+
+        const reloadOnChangeParsed = JSON.parse(reloadOnChangeString.toLowerCase())
+
+        if (joinRequestId) {
+            acknowledgeSent()
+        }
+
+        joinRequestButton.addEventListener('click', () => {
+            if (!userId) {
+                window.location.href = '@Url.Page("/Account/Login", new { area = "Identity" })'
+            }
+
+            if (joinRequestId) {
+                fetch('@Url.Action("Delete", "EventJoinRequests")', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id: +joinRequestId })
+                 })
+                .then(response => {
+                    acknowledgeUnsent()
+                    joinRequestId = null
+
+                    if (reloadOnChangeParsed) {
+                        location.reload()
+                    }
+                });
+
+            return
+            }
+
+
+            fetch('@Url.Action("Create", "EventJoinRequests")', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ EventId: @Model.Event.Id, SenderUserId: '@Model.UserId' })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    joinRequestId = data.joinRequestId; 
+                    acknowledgeSent()
+
+                    if (reloadOnChangeParsed) {
+                        location.reload()
+                    }
+                } else {
+                    alert(data.message);
+                }
+            });
+        });
+
+        function acknowledgeSent() {
+            joinRequestButton.classList.add('bg-success', 'text-white')
+            joinRequestButton.innerHTML = "<i class=\"bi bi-check-lg\"></i> Wysłano zgłoszenie do udziału"
+        }
+
+        function acknowledgeUnsent() {
+            joinRequestButton.classList.remove('bg-success', 'text-white')
+            joinRequestButton.innerHTML = "<i class=\"bi bi-send-plus-fill me-1\"></i></i> Wyślij zgłoszenie do udziału"
+        }
+    })()
+</script>
