@@ -175,6 +175,16 @@ namespace GatherUp.Controllers
             var follow = await _context.EventFollow.FirstOrDefaultAsync(ef =>  ef.UserId == CurrentUserId && ef.EventId == @event.Id);
             var joinRequest = await _context.EventJoinRequest.FirstOrDefaultAsync(ejr => ejr.SenderUserId == CurrentUserId && ejr.EventId == @event.Id);
 
+            var isUserEvent = @event.UserId == CurrentUserId;
+
+            var participantIds = await _context.EventJoinRequest.Where(ejr => ejr.Status == InvitationStatus.Accepted && ejr.EventId == @event.Id).Select(ejr => ejr.SenderUserId).ToListAsync();
+            var participantUsernames = await _context.Users
+            .Where(user => participantIds.Contains(user.Id))
+            .Select(user => user.UserName)
+            .ToListAsync();
+
+            participantUsernames.Insert(0, _context.Users.FirstOrDefault(u => u.Id == @event.UserId).UserName); // add event's creator
+
             EventViewModel eventViewModel = new EventViewModel
             {
                 Id = @event.Id,
@@ -185,9 +195,10 @@ namespace GatherUp.Controllers
                 Image = @event.Image,
                 UserName = @event.User.UserName,
                 UserId = @event.UserId,
-                IsUserEvent = @event.UserId == CurrentUserId,
+                IsUserEvent = isUserEvent,
                 UserFollow = follow,
                 UserJoinRequest = joinRequest,
+                Participants = participantUsernames,
             };
 
             return View(eventViewModel);

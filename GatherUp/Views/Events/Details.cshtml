@@ -3,10 +3,14 @@
 
 @{
     ViewData["Title"] = "Szczegóły";
+    var participantsCount = Model.Participants.Count;
 }
 
 <h1>Szczegóły wydarzenia</h1>
 <hr />
+<div class="mb-3">
+ @await Component.InvokeAsync("GoBackButton", new { url = @Url.Action("Index"), buttonText = "Wróć do przeglądu wydarzeń"})
+</div>
 <div class="event-details">
     <div style="gap: 32px;" class="d-flex h-100">
         <div class="event-details__image-container">
@@ -39,9 +43,31 @@
             </div>
         </div>
     </div>
+    <hr />
+    <div>
+        <h4>Uczestnicy wydarzenia (@participantsCount):</h4>
+        <ul>
+        @if (participantsCount > 0)
+        {
+            @foreach (var username in Model.Participants)
+            {
+                if (username == Model.Participants.First())
+                {
+                        <li>@username - <strong>Organizator</strong></li>
+                }
+                else
+                {
+                    <li>@username</li>
+                }
+            }
+         } 
+        else
+        {
+          <span class="text-muted">Brak uczestników biorących udział w tym wydarzeniu</span>   
+        }
+        </ul>
+    </div>
 </div>
-<div class="mt-3">
- @await Component.InvokeAsync("GoBackButton", new { url = @Url.Action("Index"), buttonText = "Wróć do przeglądu wydarzeń"})
-</div>
+
 
 
