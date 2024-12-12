@@ -276,7 +276,14 @@ namespace GatherUp.Controllers
                 return NotFound();
             }
 
-            if (@event.UserId != CurrentUserId)
+   
+
+            var existingEventUserId = await _context.Event
+              .Where(e => e.Id == id)
+              .Select(e => e.UserId)
+              .FirstOrDefaultAsync();
+
+            if (existingEventUserId != CurrentUserId)
             {
                 return Forbid();
             };
