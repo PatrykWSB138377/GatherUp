@@ -102,29 +102,6 @@ namespace GatherUp
         return View("ForeignRequests", paginatedJoinRequests);
     }
 
-        //GET: EventJoinRequests/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var eventJoinRequest = await _context.EventJoinRequest
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (eventJoinRequest == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(eventJoinRequest);
-        //}
-
-        // GET: EventJoinRequests/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
 
         // POST: EventJoinRequests/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -172,74 +149,6 @@ namespace GatherUp
             return Json(new { success = false, message = "There was an error during join request action" });
         }
 
-        // GET: EventJoinRequests/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var eventJoinRequest = await _context.EventJoinRequest.FindAsync(id);
-        //    if (eventJoinRequest == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(eventJoinRequest);
-        //}
-
-        // POST: EventJoinRequests/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,EventId,SenderUserId,ReceiverUserId,CreatedDate,ResolvedDate,Status")] EventJoinRequest eventJoinRequest)
-        //{
-        //    if (id != eventJoinRequest.Id)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(eventJoinRequest);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!EventJoinRequestExists(eventJoinRequest.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(eventJoinRequest);
-        //}
-
-    //GET: EventJoinRequests/Delete/5
-    //public async Task<IActionResult> Delete(int? id)
-    //{
-    //    if (id == null)
-    //    {
-    //        return NotFound();
-    //    }
-
-    //    var eventJoinRequest = await _context.EventJoinRequest
-    //        .FirstOrDefaultAsync(m => m.Id == id);
-    //    if (eventJoinRequest == null)
-    //    {
-    //        return NotFound();
-    //    }
-
-    //    return View(eventJoinRequest);
-    //}
 
 
     public class DeleteJoinRequestRequest
@@ -261,6 +170,56 @@ namespace GatherUp
             await _context.SaveChangesAsync();
             return Json(new { });
         }
+
+
+
+        public class AcceptOrRejectJoinRequestRequest
+        {
+            public int Id { get; set; }
+            public InvitationStatus NewStatus { get; set; }
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> ChangeStatus([FromBody] AcceptOrRejectJoinRequestRequest joinRequest)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var existingRequest = await _context.EventJoinRequest.FindAsync(joinRequest.Id);
+                    if (existingRequest == null)
+                    {
+                        return Json(new { success = false, message = "This request does not exist" });
+                    }
+
+                    existingRequest.Status = joinRequest.NewStatus;
+                    existingRequest.ResolvedDate = DateTime.Now;
+                    _context.Entry(existingRequest).Property(e => e.Status).IsModified = true;
+                    _context.Entry(existingRequest).Property(e => e.ResolvedDate).IsModified = true;
+
+                    await _context.SaveChangesAsync();
+
+                    return Json(new { success = true });
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!EventJoinRequestExists(joinRequest.Id))
+                    {
+                        throw;
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+
+            return Json(new { success = false, message = "There was an error during join request's status change" });
+        }
+
+  
+
 
         private bool EventJoinRequestExists(int id)
         {

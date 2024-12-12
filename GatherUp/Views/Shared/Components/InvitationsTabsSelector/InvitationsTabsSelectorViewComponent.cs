@@ -4,7 +4,7 @@ namespace GatherUp.Views.Shared.Components.InvitationsTabsSelector
 {
     public class InvitationsTabsSelectorViewComponent : ViewComponent
     {
-        public IViewComponentResult Invoke(string classes, string url, string buttonText)
+        public IViewComponentResult Invoke()
         {
  
             return View();

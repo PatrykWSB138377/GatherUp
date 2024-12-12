@@ -1,7 +1,7 @@
 ﻿@model PagedListViewModel<EventJoinRequestViewModel>
 
 @{
-     ViewData["Title"] = "Zarządzanie zaproszeniami";
+    ViewData["Title"] = "Zarządzanie zaproszeniami";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -31,6 +31,9 @@
                 <th>
                     @Html.DisplayNameFor(model => model.RefModel.Status)
                 </th>
+                <th>
+                    Akcje
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -56,6 +59,9 @@
                         <span class="@EventInvitationUtils.GetBadgeClasses(item.Status) p-2">
                             @EventInvitationUtils.TranslateStatus(item.Status)
                         </span>
+                    </td>
+                    <td>
+                        @await Component.InvokeAsync("AcceptOrRejectRequestButtons", new { joinRequestModel = @item, reloadOnChange = true })
                     </td>
                 </tr>
             }

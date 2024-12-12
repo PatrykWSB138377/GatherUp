@@ -59,8 +59,6 @@ namespace GatherUp.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteConfirmed([FromBody] DeleteFollowRequest request)
         {
-            Console.WriteLine(request.Id);
-
             var eventFollow = await _context.EventFollow.FindAsync(request.Id);
             if (eventFollow != null)
             {
