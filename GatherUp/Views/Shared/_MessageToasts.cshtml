@@ -1,0 +1,44 @@
+﻿<div aria-live="polite" aria-atomic="true" class="position-relative">
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        @* toasts will be appended by script on new message  *@
+    </div>
+</div>
+
+<script>
+    var toastContainer = document.querySelector('.toast-container')
+    var allToasts = []
+
+    connection.on("ReceiveMessage", data => {
+        console.log("Incoming notification...")
+        const toastEl = addMessageToast(data);
+        var toast = new bootstrap.Toast(toastEl, { delay: 10000 })
+        toast.show();
+    })
+
+
+    function addMessageToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.setAttribute('role', 'alert');
+        toast.setAttribute('aria-live', 'assertive');
+        toast.setAttribute('aria-atomic', 'true');
+        toast.setAttribute('id', `toast-${allToasts.length}`)
+
+        toast.innerHTML += `
+            <div class="toast-header">
+                <i class="bi bi-bell-fill me-2"></i>
+                <strong class="me-auto">Nowe powiadomienie!</strong>
+                <small class="text-muted">w tym momencie</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                ${message}
+            </div>
+            `
+
+        toastContainer.appendChild(toast);
+        allToasts.push(toast)
+
+        return toast
+    }
+</script>

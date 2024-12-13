@@ -7,5 +7,6 @@
         public EventFollow? UserFollow { get; set; }
         public EventJoinRequest? UserJoinRequest { get; set; }
         public List<string>? Participants { get; set; }
+        public List<string>? Followers { get; set; }
     }
 }
