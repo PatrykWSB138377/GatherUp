@@ -1,3 +1,4 @@
+using GatherUp;
 using GatherUp.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,9 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = true;
 });
 
+builder.Services.AddSingleton<MessagesManager>();
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -43,7 +47,13 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+
 app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapHub<MessagesManager>("/Messages");
+    });
 
 app.MapControllerRoute(
     name: "default",

@@ -4,15 +4,13 @@
 
 
 
-@* 
-TODO: uncomment this    
 @if (Model.EventJoinRequest.Status != InvitationStatus.Pending)
 {
     <span>
         -
     </span>
     return;
-} *@
+}
 
 <div id="accept-or-reject-buttons-@Model.EventJoinRequest.Id" style="gap: 8px;" class="d-flex flex-column" data-reload-on-change="@Model.ReloadOnChange">
     <button style="white-space: nowrap;" id="accept-button-@Model.EventJoinRequest.Id" class="btn btn-sm d-flex justify-between btn-success @Model.Classes">
@@ -61,16 +59,16 @@ TODO: uncomment this
                 },
                 body: JSON.stringify({ Id: @Model.EventJoinRequest.Id, NewStatus: newStatus })
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        if (reloadOnChangeParsed) {
-                            location.reload()
-                        }
-                    } else {
-                        alert(data.message);
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (reloadOnChangeParsed) {
+                        location.reload()
                     }
-                });
+                } else {
+                    alert(data.message);
+                }
+            });
        }
 
     })()

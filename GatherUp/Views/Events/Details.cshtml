@@ -4,6 +4,7 @@
 @{
     ViewData["Title"] = "Szczegóły";
     var participantsCount = Model.Participants.Count;
+    var followersCount = Model.Followers.Count;
 }
 
 <h1>Szczegóły wydarzenia</h1>
@@ -12,14 +13,15 @@
  @await Component.InvokeAsync("GoBackButton", new { url = @Url.Action("Index"), buttonText = "Wróć do przeglądu wydarzeń"})
 </div>
 <div class="event-details">
-    <div style="gap: 32px;" class="d-flex h-100">
+    <div style="gap: 32px;" class="d-lg-flex h-100">
         <div class="event-details__image-container">
             <img class="event-details__image" src="~/internal-images/@Model.Image" />
         </div>
         <div class="d-flex flex-column w-100">
-            <div style="gap: 50%;" class="d-flex align-items-center">
+            <div style="gap: 32px;" class="d-flex align-items-center">
                 <h3>@Model.Name</h3>
                 <p class="text-muted m-0">Organizator: @Model.UserName</p>
+                <p class="text-muted m-0">Odbywa się: @Model.Date</p>
             </div>
             <p class="text-muted"><strong>Adres:</strong> @Model.Location</p>
             <span class="lead d-block mb-1">@Html.DisplayNameFor(Model => Model.Description):</span>
@@ -44,28 +46,49 @@
         </div>
     </div>
     <hr />
-    <div>
-        <h4>Uczestnicy wydarzenia (@participantsCount):</h4>
-        <ul>
-        @if (participantsCount > 0)
-        {
-            @foreach (var username in Model.Participants)
-            {
-                if (username == Model.Participants.First())
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h4 class="text-success">Uczestnicy wydarzenia (@participantsCount):</h4>
+                <ul>
+                @if (participantsCount > 0)
                 {
-                        <li>@username - <strong>Organizator</strong></li>
-                }
+                    @foreach (var username in Model.Participants)
+                    {
+                        if (username == Model.Participants.First())
+                        {
+                                <li>@username - <strong>Organizator</strong></li>
+                        }
+                        else
+                        {
+                            <li>@username</li>
+                        }
+                    }
+                 } 
                 else
                 {
-                    <li>@username</li>
+                  <span class="text-muted">Brak uczestników biorących udział w tym wydarzeniu</span>   
                 }
-            }
-         } 
-        else
-        {
-          <span class="text-muted">Brak uczestników biorących udział w tym wydarzeniu</span>   
-        }
-        </ul>
+                </ul>
+            </div>
+            <div class="vr p-0 mx-5"></div>
+            <div class="col">
+                <h4 class="text-primary">Obserwujący wydarzenie (@followersCount):</h4>
+                <ul>
+                    @if (followersCount > 0)
+                    {
+                        @foreach (var username in Model.Followers)
+                        {
+                            <li>@username</li>
+                        }
+                    }
+                    else
+                    {
+                        <span class="text-muted">Brak obserwujących</span>
+                    }
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
 

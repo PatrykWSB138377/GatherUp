@@ -13,6 +13,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using System.Runtime.InteropServices;
 using System.Security.Claims;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+using System.ComponentModel;
 
 namespace GatherUp.Controllers
 {
@@ -30,10 +33,12 @@ namespace GatherUp.Controllers
     public class EventsController : BaseController
     {
         private readonly ApplicationDbContext _context;
+        private readonly MessagesManager _messagesManager;
 
-        public EventsController(ApplicationDbContext context)
+        public EventsController(ApplicationDbContext context, MessagesManager messagesManager)
         {
             _context = context;
+            _messagesManager = messagesManager;
         }
 
         // GET: Events
@@ -185,6 +190,12 @@ namespace GatherUp.Controllers
 
             participantUsernames.Insert(0, _context.Users.FirstOrDefault(u => u.Id == @event.UserId).UserName); // add event's creator
 
+            var followerIds = GetEventFollowersIds(@event.Id);
+            var followerUsernames = await _context.Users
+            .Where(user => followerIds.Contains(user.Id))
+            .Select(user => user.UserName)
+            .ToListAsync();
+
             EventViewModel eventViewModel = new EventViewModel
             {
                 Id = @event.Id,
@@ -199,6 +210,7 @@ namespace GatherUp.Controllers
                 UserFollow = follow,
                 UserJoinRequest = joinRequest,
                 Participants = participantUsernames,
+                Followers = followerUsernames,
             };
 
             return View(eventViewModel);
@@ -276,7 +288,12 @@ namespace GatherUp.Controllers
                 return NotFound();
             }
 
-            if (@event.UserId != CurrentUserId)
+
+
+            var originalEvent = await _context.Event.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
+            var existingEventUserId = originalEvent.UserId;
+
+            if (existingEventUserId != CurrentUserId)
             {
                 return Forbid();
             };
@@ -287,8 +304,15 @@ namespace GatherUp.Controllers
             {
                 try
                 {
+                    var updatedFields = GetChangedFields(originalEvent, @event);
                     _context.Update(@event);
                     await _context.SaveChangesAsync();
+
+                    if (updatedFields.Any())
+                    {
+                        var eventFollowers = GetEventFollowersIds(@event.Id);
+                        await _messagesManager.EmitMessageForUsers(eventFollowers, BuildHTMLEventUpdateMessage(@event, updatedFields)); // send info about event being edited to all following users
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -305,6 +329,31 @@ namespace GatherUp.Controllers
                 return RedirectToAction(nameof(Index));
 
             }
+            return View(@event);
+        }
+
+
+        // GET: Events/Delete/5
+        [Authorize]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var @event = await _context.Event
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (@event == null)
+            {
+                return NotFound();
+            }
+
+            if (@event.UserId != CurrentUserId)
+            {
+                return Forbid();
+            };
+
             return View(@event);
         }
 
@@ -332,6 +381,62 @@ namespace GatherUp.Controllers
         private bool EventExists(int id)
         {
             return _context.Event.Any(e => e.Id == id);
+        }
+
+
+        private List<string> GetEventFollowersIds(int eventId)
+        {
+            if (!EventExists(eventId))
+            {
+                throw new ArgumentException("Invalid eventId");
+            }
+
+            return _context.EventFollow.Where(ef => ef.EventId == eventId).Select(ef => ef.UserId).ToList();
+            
+        }
+
+        public List<string> GetChangedFields<T>(T originalEntity, T updatedEntity)
+        {
+            var changedFields = new List<string>();
+            var properties = typeof(T).GetProperties(); 
+
+            foreach (var property in properties)
+            {
+                var originalValue = property.GetValue(originalEntity);
+                var updatedValue = property.GetValue(updatedEntity);
+
+                if (!object.Equals(originalValue, updatedValue)) 
+                {
+                    changedFields.Add(property.Name);
+                }
+            }
+
+            return changedFields;
+        }
+
+
+        public string GetDisplayName<T>(string propertyName)
+        {
+            var property = typeof(T).GetProperty(propertyName);
+            Console.WriteLine(property);
+            var displayAttribute = property?.GetCustomAttribute<DisplayNameAttribute>();
+            Console.WriteLine("DISPLAY ATTRIBUTE");
+            Console.WriteLine(displayAttribute);
+            return displayAttribute.DisplayName ?? propertyName;
+        }
+
+        public string BuildHTMLEventUpdateMessage(Event @event, List<string> updatedFields)
+        {
+            string updateString = $"Wydarzenie <a href={Url.Action("Details", new { id = @event.Id })}>{TextUtils.Truncate(@event.Name, 30)}</a> zostało zaktualizowane przez organizatora! Zmienione zostały: </br>";
+
+            updateString += "<ul>";
+            foreach(var field in updatedFields)
+            {
+                updateString += $"<li>{GetDisplayName<Event>(field)}</li>";
+            }
+            updateString += "</ul>";
+
+            return updateString;
         }
     }
 }

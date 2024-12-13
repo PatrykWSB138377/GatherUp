@@ -15,15 +15,28 @@ namespace GatherUp.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
             // store status as string, yet use enums in code
             modelBuilder.Entity<EventInvitationBase>()
                 .Property(e => e.Status)
                 .HasConversion(
-                    v => v.ToString(), 
-                    v => (InvitationStatus)Enum.Parse(typeof(InvitationStatus), v)  
+                    v => v.ToString(),
+                    v => (InvitationStatus)Enum.Parse(typeof(InvitationStatus), v)
                 );
+
+            modelBuilder.Entity<EventFollow>()
+                 .HasOne(ef => ef.Event)      
+                 .WithMany()                  
+                 .HasForeignKey(ef => ef.EventId) 
+                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<EventInvitationBase>()
+                 .HasOne(ef => ef.Event)
+                 .WithMany()
+                 .HasForeignKey(ef => ef.EventId)
+                 .OnDelete(DeleteBehavior.Cascade);
+
+
+            base.OnModelCreating(modelBuilder);
         }
         public DbSet<GatherUp.Models.EventJoinRequest> EventJoinRequest { get; set; } = default!;
     }
