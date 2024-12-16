@@ -418,10 +418,7 @@ namespace GatherUp.Controllers
         public string GetDisplayName<T>(string propertyName)
         {
             var property = typeof(T).GetProperty(propertyName);
-            Console.WriteLine(property);
             var displayAttribute = property?.GetCustomAttribute<DisplayNameAttribute>();
-            Console.WriteLine("DISPLAY ATTRIBUTE");
-            Console.WriteLine(displayAttribute);
             return displayAttribute.DisplayName ?? propertyName;
         }
 
