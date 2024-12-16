@@ -39,6 +39,7 @@ namespace GatherUp
 
 
         //GET: Own EventJoinRequests
+        [Authorize]
     public async Task<IActionResult> OwnRequests(int pageNumber = 1, int pageSize = 20)
     {
         var joinRequests = await _context.EventJoinRequest.Where(ejr => ejr.SenderUserId == CurrentUserId).Include(ejr => ejr.Event).Select(ejr => new EventJoinRequestViewModel 
@@ -71,7 +72,8 @@ namespace GatherUp
     }
 
         //GET:Foregin (other users) EventJoinRequests
-    public async Task<IActionResult> ForeignRequests(int pageNumber = 1, int pageSize = 20)
+        [Authorize]
+        public async Task<IActionResult> ForeignRequests(int pageNumber = 1, int pageSize = 20)
     {
         var joinRequests = await _context.EventJoinRequest.Where(ejr => ejr.ReceiverUserId == CurrentUserId).Include(ejr => ejr.Event).Select(ejr => new EventJoinRequestViewModel
         {

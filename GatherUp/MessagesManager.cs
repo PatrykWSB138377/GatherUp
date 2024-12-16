@@ -16,13 +16,11 @@ namespace GatherUp
         public async Task EmitMessageForUsers(List<string> usersIds, string message)
         {
 
-            Console.WriteLine("HMMMM");
             if (_hubContext == null) 
             { 
                 throw new InvalidOperationException("HubContext is not initialized.");
             }
 
-            Console.WriteLine(usersIds.ToString());
             await Clients.Users(usersIds).SendAsync("ReceiveMessage", message);
         }
     }
